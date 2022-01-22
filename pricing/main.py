@@ -9,9 +9,10 @@ def greeks_call(S0, K, T, sigma, r):
     delta = norm.cdf(d1)
     gamma = norm.pdf(d1)/(S0*sigma*np.sqrt(T))
     vega = S0*norm.pdf(d1)*np.sqrt(T)
-    theta = -(S0*norm.pdf(d1)*sigma)/(2*np.sqrt(T)) - r*K*np.exp(-r*T)*norm.cdf(d2)
+    theta = (-(S0*sigma*norm.pdf(d1))/(2*np.sqrt(T)) - r*K*np.exp(-r*T)*norm.cdf(d2))
+    rho = T*K*np.exp(-r*T)*norm.cdf(d2)
 
-    return [delta, gamma, vega, theta]
+    return [delta, gamma, vega, theta, rho]
 
 
 def greeks_put(S0, K, T, sigma, r):
@@ -20,9 +21,11 @@ def greeks_put(S0, K, T, sigma, r):
 
     delta = norm.cdf(d1) - 1
     gamma = norm.pdf(d1)/(S0*sigma*np.sqrt(T))
-    theta = (S0*norm.pdf(d1)*sigma)/(2*np.sqrt(T)) + r*K*np.exp(-r*T)*norm.cdf(d2)
+    vega = S0*norm.pdf(d1)*np.sqrt(T)
+    theta = -(S0*norm.pdf(d1)*sigma)/(2*np.sqrt(T)) + r*K*np.exp(-r*T)*norm.cdf(-d2)
+    rho = -T*K*np.exp(-r*T)*norm.cdf(-d2)
 
-    return [delta, gamma, theta]
+    return [delta, gamma, vega, theta, rho]
 
 
 def black_scholes_call_option_price(S0, K, T, sigma, r):
@@ -47,7 +50,8 @@ if __name__ == '__main__':
     cp = black_scholes_call_option_price(S0, K, T, sigma, r)
     print(cp)
 
-    pp = black_scholes_put_option_price(S0, K, T, sigma, r)
-    print(pp)
+    # pp = black_scholes_put_option_price(S0, K, T, sigma, r)
+    # print(pp)
 
     print(greeks_call(S0, K, T, sigma, r))
+    print(greeks_put(S0, K, T, sigma, r))
